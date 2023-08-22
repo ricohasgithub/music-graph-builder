@@ -14,6 +14,7 @@ class Music21Graph():
         # Graph building and storage
         self.graph = dict()
         self.nodes = self.get_nodes()
+        self.print_nodes()
 
     def get_nodes(self):
         # Find every note and store it as a new node
@@ -51,6 +52,10 @@ class Music21Graph():
                     undirected_edges.append((node, neighbor))
 
         return nodes, directed_edges, undirected_edges
+    
+    def print_nodes(self):
+        for node in self.nodes:
+            print("Measure: ", node[1], "Note: ", node[0], "Duration: ", node[3])
     
 if __name__ == "__main__":
     graph = Music21Graph("chopin.mxl")
