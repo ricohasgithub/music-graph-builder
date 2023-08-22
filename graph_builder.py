@@ -19,22 +19,27 @@ class Music21Graph():
     def get_nodes(self):
         # Find every note and store it as a new node
         nodes = []
+        note_id = 0
         for part in self.score.parts:
             for measure in part.getElementsByClass('Measure'):
                 for note_or_chord in measure.notesAndRests:
                     if isinstance(note_or_chord, note.Note):
-                        nodes.append((note_or_chord.nameWithOctave,
+                        nodes.append((note_id,
+                                      note_or_chord.nameWithOctave,
                                       measure.number,
                                       note_or_chord.duration,
                                       note_or_chord.beat,
                                       note_or_chord.quarterLength))
+                        note_id += 1
                     elif isinstance(note_or_chord, chord.Chord):
                         for individual_note in note_or_chord.pitches:
-                            nodes.append((individual_note.nameWithOctave,
-                                      measure.number,
-                                      note_or_chord.duration,
-                                      note_or_chord.beat,
-                                      note_or_chord.quarterLength))
+                            nodes.append((note_id,
+                                        individual_note.nameWithOctave,
+                                        measure.number,
+                                        note_or_chord.duration,
+                                        note_or_chord.beat,
+                                        note_or_chord.quarterLength))
+                            note_id += 1
                     elif isinstance(note_or_chord, note.Rest):
                         continue
         return nodes
@@ -55,7 +60,7 @@ class Music21Graph():
     
     def print_nodes(self):
         for node in self.nodes:
-            print("Measure: ", node[1], "Note: ", node[0], "Duration: ", node[3])
+            print("Node: ", node[0], "Measure: ", node[2], "Note: ", node[1], "Duration: ", node[4])
     
 if __name__ == "__main__":
     graph = Music21Graph("chopin.mxl")
