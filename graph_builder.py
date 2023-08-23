@@ -13,17 +13,22 @@ class Music21Graph():
 
         # Graph building and storage
         self.graph = dict()
-        self.nodes = self.get_nodes()
+        self.nodes, self.notes = self.get_nodes()
+
         self.print_nodes()
 
     def get_nodes(self):
+        
         # Find every note and store it as a new node
         nodes = []
+        notes = []
+
         note_id = 0
         for part in self.score.parts:
             for measure in part.getElementsByClass('Measure'):
                 for note_or_chord in measure.notesAndRests:
                     if isinstance(note_or_chord, note.Note):
+                        notes.append((note_or_chord, note_id))
                         nodes.append((note_id,
                                       note_or_chord.nameWithOctave,
                                       measure.number,
@@ -33,6 +38,7 @@ class Music21Graph():
                         note_id += 1
                     elif isinstance(note_or_chord, chord.Chord):
                         for individual_note in note_or_chord.pitches:
+                            notes.append((note_or_chord, note_id))
                             nodes.append((note_id,
                                         individual_note.nameWithOctave,
                                         measure.number,
@@ -42,7 +48,7 @@ class Music21Graph():
                             note_id += 1
                     elif isinstance(note_or_chord, note.Rest):
                         continue
-        return nodes
+        return nodes, notes
 
     # Converts an adjacency list representation into tables of nodes, directed and undirected edges
     def convert_graph_to_tables(self):
